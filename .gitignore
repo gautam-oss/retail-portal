@@ -57,3 +57,4 @@ htmlcov/
 *.pem
 *.key
 secrets.json
+.claude
