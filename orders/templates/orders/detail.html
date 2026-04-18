@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.pk }} — RetailPortal{% endblock %}
+{% block breadcrumb %}
+<nav class="text-sm text-gray-500 mb-4">
+  <a href="{% url 'home' %}" class="hover:text-red-600">Home</a> /
+  <a href="{% url 'order-list' %}" class="hover:text-red-600">My Orders</a> / #{{ order.pk }}
+</nav>
+{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white rounded-2xl shadow p-8">
+    <div class="flex justify-between items-start mb-6">
+      <div>
+        <h1 class="text-2xl font-bold">Order #{{ order.pk }}</h1>
+        <p class="text-sm text-gray-400">Placed on {{ order.created_at|date:"F j, Y g:i A" }}</p>
+      </div>
+      <span class="px-3 py-1 rounded-full text-xs font-bold
+        {% if order.status == 'delivered' %}bg-green-100 text-green-700
+        {% elif order.status == 'confirmed' %}bg-blue-100 text-blue-700
+        {% elif order.status == 'cancelled' %}bg-red-100 text-red-700
+        {% else %}bg-yellow-100 text-yellow-700{% endif %}">
+        {{ order.status|capfirst }}
+      </span>
+    </div>
+
+    <table class="w-full text-sm mb-6">
+      <thead class="bg-gray-50 text-gray-600">
+        <tr>
+          <th class="text-left py-2 px-3 rounded-l">Item</th>
+          <th class="text-center py-2 px-3">Qty</th>
+          <th class="text-right py-2 px-3 rounded-r">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for item in order.items.all %}
+        <tr>
+          <td class="py-3 px-3">
+            <a href="{% url 'product-detail' item.product.pk %}" class="font-semibold hover:text-red-600">
+              {{ item.product.title }}
+            </a>
+          </td>
+          <td class="py-3 px-3 text-center">{{ item.quantity }}</td>
+          <td class="py-3 px-3 text-right font-semibold">₹{{ item.subtotal }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="border-t-2 border-gray-200">
+          <td colspan="2" class="py-3 px-3 text-right font-bold">Total</td>
+          <td class="py-3 px-3 text-right font-bold text-red-600 text-lg">₹{{ order.total }}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="flex gap-3">
+      <a href="{% url 'order-reorder' order.pk %}"
+         class="bg-red-600 text-white px-5 py-2 rounded font-bold hover:bg-red-700 text-sm">
+        Reorder
+      </a>
+      <a href="{% url 'order-list' %}" class="bg-gray-200 text-gray-700 px-5 py-2 rounded font-bold hover:bg-gray-300 text-sm">
+        Back to Orders
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

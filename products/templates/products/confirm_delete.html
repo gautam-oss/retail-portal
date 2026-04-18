@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Delete Product — RetailPortal{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-10">
+  <div class="bg-white rounded-2xl shadow p-8 text-center">
+    <h2 class="text-xl font-bold mb-4">Delete "{{ object.title }}"?</h2>
+    <p class="text-gray-500 mb-6 text-sm">This action cannot be undone.</p>
+    <form method="post" class="flex justify-center gap-4">
+      {% csrf_token %}
+      <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded font-bold hover:bg-red-700">Delete</button>
+      <a href="{% url 'product-list' %}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded font-bold hover:bg-gray-300">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

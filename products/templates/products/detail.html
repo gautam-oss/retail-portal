@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}{{ product.title }} — RetailPortal{% endblock %}
+{% block breadcrumb %}
+<nav class="text-sm text-gray-500 mb-4">
+  <a href="{% url 'home' %}" class="hover:text-red-600">Home</a> /
+  <a href="{% url 'product-list' %}" class="hover:text-red-600">Menu</a> /
+  <a href="{% url 'product-list' %}?category={{ product.category.id }}" class="hover:text-red-600">{{ product.category.name }}</a> /
+  {{ product.title }}
+</nav>
+{% endblock %}
+{% block content %}
+<div class="bg-white rounded-2xl shadow overflow-hidden mb-8">
+  <div class="md:flex">
+    <div class="md:w-1/2">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.title }}" class="w-full h-72 md:h-full object-cover" />
+      {% else %}
+        <div class="w-full h-72 bg-red-50 flex items-center justify-center text-6xl">🍔</div>
+      {% endif %}
+    </div>
+    <div class="md:w-1/2 p-8 flex flex-col justify-between">
+      <div>
+        <p class="text-xs text-red-500 font-semibold uppercase mb-2">{{ product.category.name }}</p>
+        <h1 class="text-3xl font-extrabold mb-3">{{ product.title }}</h1>
+        <p class="text-gray-600 mb-4">{{ product.description }}</p>
+        <div class="flex items-baseline gap-3 mb-2">
+          <span class="text-2xl font-bold text-red-600">₹{{ product.cost }}</span>
+          {% if product.tax_percent > 0 %}
+          <span class="text-sm text-gray-400">+ {{ product.tax_percent }}% tax = ₹{{ product.price_with_tax|floatformat:2 }}</span>
+          {% endif %}
+        </div>
+        <p class="text-sm text-gray-500 mb-4">
+          Stock: <span class="font-semibold {% if product.stock == 0 %}text-red-500{% else %}text-green-600{% endif %}">
+            {% if product.stock == 0 %}Out of stock{% else %}{{ product.stock }} available{% endif %}
+          </span>
+        </p>
+      </div>
+
+      {% if user.is_authenticated %}
+        {% if product.stock > 0 %}
+        <form method="post" action="{% url 'order-create' %}">
+          {% csrf_token %}
+          <input type="hidden" name="product_ids[]" value="{{ product.pk }}" />
+          <div class="flex items-center gap-3 mb-4">
+            <label class="text-sm font-semibold">Qty:</label>
+            <input type="number" name="quantities[]" value="1" min="1" max="{{ product.stock }}"
+                   class="w-20 border rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-red-400" />
+          </div>
+          <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition text-lg">
+            Order Now
+          </button>
+        </form>
+        {% else %}
+        <button disabled class="w-full bg-gray-300 text-gray-500 py-3 rounded-xl font-bold cursor-not-allowed text-lg">
+          Out of Stock
+        </button>
+        {% endif %}
+      {% else %}
+      <a href="{% url 'login' %}?next={{ request.path }}"
+         class="block w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition text-center text-lg">
+        Login to Order
+      </a>
+      {% endif %}
+
+      {% if user.is_authenticated and user.is_admin_user %}
+      <div class="mt-4 flex gap-3 text-sm">
+        <a href="{% url 'product-update' product.pk %}" class="text-blue-600 hover:underline">Edit</a>
+        <a href="{% url 'stock-update' product.pk %}" class="text-green-600 hover:underline">Update Stock</a>
+        <a href="{% url 'product-delete' product.pk %}" class="text-red-500 hover:underline">Delete</a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% if related %}
+<h2 class="text-xl font-bold mb-4">More from {{ product.category.name }}</h2>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+  {% for item in related %}
+  <a href="{% url 'product-detail' item.pk %}" class="bg-white rounded-xl shadow hover:shadow-md transition overflow-hidden group">
+    {% if item.image %}
+      <img src="{{ item.image.url }}" alt="{{ item.title }}" class="w-full h-32 object-cover group-hover:scale-105 transition" />
+    {% else %}
+      <div class="w-full h-32 bg-red-50 flex items-center justify-center text-3xl">🍔</div>
+    {% endif %}
+    <div class="p-2">
+      <p class="text-sm font-bold truncate">{{ item.title }}</p>
+      <p class="text-red-600 font-semibold text-sm">₹{{ item.cost }}</p>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

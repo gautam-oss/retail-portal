@@ -1,0 +1,36 @@
+{% load static %}
+<nav class="bg-red-600 text-white shadow-md">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="{% url 'home' %}" class="text-2xl font-bold tracking-tight flex items-center gap-2">
+      🛒 RetailPortal
+    </a>
+
+    <form method="get" action="{% url 'search' %}" class="hidden md:flex items-center gap-2">
+      <input
+        type="text" name="q" placeholder="Search products..."
+        value="{{ request.GET.q }}"
+        class="px-3 py-1.5 rounded text-gray-800 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-white"
+      />
+      <button type="submit" class="bg-white text-red-600 font-semibold px-3 py-1.5 rounded text-sm hover:bg-gray-100">
+        Search
+      </button>
+    </form>
+
+    <div class="flex items-center gap-4 text-sm font-medium">
+      <a href="{% url 'product-list' %}" class="hover:text-red-200">Menu</a>
+      <a href="{% url 'category-list' %}" class="hover:text-red-200">Categories</a>
+
+      {% if user.is_authenticated %}
+        {% if user.is_admin_user %}
+          <a href="{% url 'product-create' %}" class="hover:text-red-200">+ Product</a>
+          <a href="{% url 'admin:index' %}" class="hover:text-red-200">Admin</a>
+        {% endif %}
+        <a href="{% url 'order-list' %}" class="hover:text-red-200">My Orders</a>
+        <a href="{% url 'logout' %}" class="bg-white text-red-600 px-3 py-1 rounded hover:bg-gray-100">Logout</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="hover:text-red-200">Login</a>
+        <a href="{% url 'register' %}" class="bg-white text-red-600 px-3 py-1 rounded hover:bg-gray-100">Sign Up</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>

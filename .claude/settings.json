@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip3 show *)",
+      "Bash(pip3 list *)",
+      "Bash(django-admin startproject *)",
+      "Bash(python manage.py startapp accounts)",
+      "Bash(python manage.py startapp categories)",
+      "Bash(python manage.py startapp products)",
+      "Bash(python manage.py startapp orders)",
+      "Bash(python manage.py makemigrations accounts categories products orders)",
+      "Bash(python manage.py check)",
+      "Bash(docker --version)",
+      "Bash(docker run *)",
+      "Bash(pip install *)",
+      "Bash(docker exec *)",
+      "Bash(python manage.py migrate)",
+      "Bash(python manage.py shell -c ' *)",
+      "Bash(python manage.py runserver)",
+      "Bash(curl -s http://127.0.0.1:8000/)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000__TRACKED_VAR__)",
+      "Bash(curl -s http://127.0.0.1:8000/products/)",
+      "Bash(curl -s http://127.0.0.1:8000/api/products/)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(f'Total products: {d[\\\\\"count\\\\\"]}'\\); [print\\(f'  - {p[\\\\\"title\\\\\"]} \\(₹{p[\\\\\"cost\\\\\"]}\\)'\\) for p in d['results'][:5]]\")",
+      "Bash(curl -s \"http://127.0.0.1:8000/search/?q=burger\")",
+      "Bash(python manage.py --version)"
+    ],
+    "additionalDirectories": [
+      "/home/gautamkumar/retail-portal/accounts/templates"
+    ]
+  }
+}

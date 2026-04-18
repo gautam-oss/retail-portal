@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Update Stock — RetailPortal{% endblock %}
+{% block breadcrumb %}
+<nav class="text-sm text-gray-500 mb-4">
+  <a href="{% url 'home' %}" class="hover:text-red-600">Home</a> /
+  <a href="{% url 'product-list' %}" class="hover:text-red-600">Menu</a> /
+  <a href="{% url 'product-detail' product.pk %}" class="hover:text-red-600">{{ product.title }}</a> / Stock
+</nav>
+{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto">
+  <div class="bg-white rounded-2xl shadow p-8">
+    <h2 class="text-xl font-bold mb-2">Update Stock</h2>
+    <p class="text-gray-500 text-sm mb-6">{{ product.title }}</p>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="block text-sm font-semibold mb-1">Stock Quantity</label>
+        {{ form.stock }}
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded font-bold hover:bg-red-700">Update</button>
+        <a href="{% url 'product-detail' product.pk %}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded font-bold hover:bg-gray-300">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

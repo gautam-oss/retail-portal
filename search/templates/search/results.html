@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Search: {{ query }} — RetailPortal{% endblock %}
+{% block breadcrumb %}
+<nav class="text-sm text-gray-500 mb-4">
+  <a href="{% url 'home' %}" class="hover:text-red-600">Home</a> / Search
+</nav>
+{% endblock %}
+{% block content %}
+<div class="mb-6">
+  <form method="get" action="{% url 'search' %}" class="flex gap-2 max-w-xl">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search products..."
+           class="flex-1 border px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400" />
+    <button type="submit" class="bg-red-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-red-700">Search</button>
+  </form>
+</div>
+
+{% if query %}
+<p class="text-sm text-gray-500 mb-4">
+  {% if products %}{{ products|length }} result{% if products|length != 1 %}s{% endif %} for "{{ query }}"
+  {% else %}No results for "{{ query }}"{% endif %}
+</p>
+{% endif %}
+
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+  {% for product in products %}
+  <div class="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden group">
+    <a href="{% url 'product-detail' product.pk %}">
+      {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.title }}"
+             class="w-full h-40 object-cover group-hover:scale-105 transition duration-300" />
+      {% else %}
+        <div class="w-full h-40 bg-red-50 flex items-center justify-center text-4xl">🍔</div>
+      {% endif %}
+    </a>
+    <div class="p-3">
+      <p class="text-xs text-red-500 font-semibold uppercase mb-1">{{ product.category.name }}</p>
+      <a href="{% url 'product-detail' product.pk %}">
+        <h3 class="font-bold text-sm mb-1 truncate hover:text-red-600">{{ product.title }}</h3>
+      </a>
+      <p class="text-red-600 font-bold">₹{{ product.cost }}</p>
+    </div>
+  </div>
+  {% empty %}
+  {% if query %}
+  <div class="col-span-4 text-center py-16">
+    <p class="text-5xl mb-4">🔍</p>
+    <p class="text-gray-500">No products matched your search.</p>
+    <a href="{% url 'product-list' %}" class="mt-4 inline-block text-red-600 font-semibold hover:underline">Browse all products</a>
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}
